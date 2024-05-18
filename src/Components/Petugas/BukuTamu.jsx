@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import { Link, useLocation } from 'react-router-dom';
 import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
@@ -11,15 +12,15 @@ import ClassRoundedIcon from '@mui/icons-material/ClassRounded';
 import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
 import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
 import SummarizeRoundedIcon from '@mui/icons-material/SummarizeRounded';
-import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
 import RemoveRedEyeRoundedIcon from '@mui/icons-material/RemoveRedEyeRounded';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
 
-const Laporan = () => {
-  const location = useLocation();
-  const [selectedRow, setSelectedRow] = useState(null);
+const BukuTamu = () => {
+  const location = useLocation();const [selectedRow, setSelectedRow] = useState(null);
   const [popupOpen, setPopupOpen] = useState(false);
-  
+  const [activePage, setActivePage] = useState('');
+
   const openPopup = (row) => {
     setSelectedRow(row); // Set the selected row
     setPopupOpen(true);
@@ -29,77 +30,74 @@ const Laporan = () => {
     setPopupOpen(false);
   };
 
-  const [activePage, setActivePage] = useState('');
-
   useEffect(() => {
     setActivePage(location.pathname);
   }, [location.pathname]);
 
   const data = [
-    { id: 1, nama: 'Bu Mia', nik: '1238740340', notelpon: '083627319282', tujuan: 'Budi Santoso', keperluan: 'Rapat Dinas', tanggal:'20/03/2024',jam_masuk:'13:21', jam_keluar:'14:00', alamat: 'Bandar Lampung',status: 'Pending' },
-    { id: 1, nama: 'Bu Eni', nik: '3384929393', notelpon: '083647271122', tujuan: 'Budi Santoso', keperluan: 'Rapat Dinas', tanggal:'21/03/2024',jam_masuk:'13:21', jam_keluar:'14:00', alamat: 'Bandar Lampung',status: 'Pending' },
+    { id: 1, nama: 'Bu Mia', nik: '1238740340', notelpon: '083627319282', tujuan: 'Budi Santoso', keperluan: 'Rapat Dinas',  tanggal:'20/03/2024',jam_masuk:'13:21', jam_keluar:'14:00', alamat: 'Bandar Lampung',status: 'Selesai' },
+    { id: 1, nama: 'Bu Eni', nik: '3384929393', notelpon: '083647271122', tujuan: 'Budi Santoso', keperluan: 'Rapat Dinas', tanggal:'21/03/2024',jam_masuk:'13:21', jam_keluar:'14:00', alamat: 'Bandar Lampung',status: 'Selesai' },
     // Add more data objects here
   ];
 
   const columns = [
-    {
-      name: 'Nama',
-      selector: row => row.nama,
-      sortable: true,
-      $grow: 2, // Using $grow instead of grow
-    },
-    {
-      name: 'No Telpon',
-      selector: row => row.notelpon,
-      sortable: true,
-      $grow: 1, // Using $grow instead of grow
-    },
-    {
-      name: 'Tujuan',
-      selector: row => row.tujuan,
-      sortable: true,
-      $grow: 1, // Using $grow instead of grow
-    },
-    {
-      name: 'Keperluan',
-      selector: row => row.keperluan,
-      sortable: true,
-      $grow: 1, // Using $grow instead of grow
-    },
-    {
-      name: 'Tanggal',
-      selector: row => row.tanggal,
-      sortable: true,
-      $grow: 1, // Using $grow instead of grow
-    },
-    {
-      name: 'Status',
-      selector: row => row.status,
-      sortable: true,
-      $grow: 1, // Using $grow instead of grow
-    },
-    {
-      name: 'Actions',
-      cell: (row) => (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-          <button onClick={() => openPopup(row)} className='bg-blue-600 text-white px-2 py-2 rounded flex items-center hover:bg-blue-700'>
-            <RemoveRedEyeRoundedIcon style={{ fontSize: '15px'}} />
-          </button>
-          <button className='bg-red-600 text-white px-2 py-2 rounded flex items-center hover:bg-red-700'>
-            <DeleteForeverRoundedIcon style={{ fontSize: '15px'}}/>
-          </button>
-        </div>
-      ),
-      $grow: 1, // Using $grow instead of grow
-    },
-  ];
-
+  {
+    name: 'Nama',
+    selector: row => row.nama,
+    sortable: true,
+    $grow: 2, // Using $grow instead of grow
+  },
+  {
+    name: 'No Telpon',
+    selector: row => row.notelpon,
+    sortable: true,
+    $grow: 1, // Using $grow instead of grow
+  },
+  {
+    name: 'Tujuan',
+    selector: row => row.tujuan,
+    sortable: true,
+    $grow: 1, // Using $grow instead of grow
+  },
+  {
+    name: 'Keperluan',
+    selector: row => row.keperluan,
+    sortable: true,
+    $grow: 1, // Using $grow instead of grow
+  },
+  {
+    name: 'Tanggal',
+    selector: row => row.tanggal,
+    sortable: true,
+    $grow: 1, // Using $grow instead of grow
+  },
+  {
+    name: 'Status',
+    selector: row => row.status,
+    sortable: true,
+    $grow: 1, // Using $grow instead of grow
+  },
+  {
+    name: 'Actions',
+    cell: (row) => (
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+        <button onClick={() => openPopup(row)} className='bg-blue-600 text-white px-2 py-2 rounded flex items-center hover:bg-blue-700'>
+          <RemoveRedEyeRoundedIcon style={{ fontSize: '15px'}} />
+        </button>
+        <button className='bg-red-600 text-white px-2 py-2 rounded flex items-center hover:bg-red-700'>
+          <DeleteForeverRoundedIcon style={{ fontSize: '15px'}}/>
+        </button>
+      </div>
+    ),
+    $grow: 1, // Using $grow instead of grow
+  },
+];
   const Links = [
-    { name: 'Dashboard', link: '/dashboard', icon: <DashboardRoundedIcon /> },
-    { name: 'Data Karyawan', link: '/datakaryawan', icon: <GroupRoundedIcon /> },
-    { name: 'Daftar Tamu', link: '/daftartamu', icon: <GroupsRoundedIcon /> },
-    { name: 'Buku Tamu', link: '/bukutamu', icon: <ClassRoundedIcon /> },
-    { name: 'laporan', link: '/laporan', icon: <SummarizeRoundedIcon /> },
+    { name: 'Dashboard', link: '/petugas/dashboard', icon: <DashboardRoundedIcon /> },
+    { name: 'Data Karyawan', link: '/petugas/datakaryawan', icon: <GroupRoundedIcon /> },
+    { name: 'Daftar Tamu', link: '/petugas/daftartamu', icon: <GroupsRoundedIcon /> },
+    { name: 'Buku Tamu', link: '/petugas/bukutamu', icon: <ClassRoundedIcon /> },
+    { name: 'laporan', link: '/petugas/laporan', icon: <SummarizeRoundedIcon /> },
   ];
 
   const formattedDateTime = moment().format('DD/MM/YYYY HH:mm');
@@ -120,9 +118,9 @@ const Laporan = () => {
 
   const handleSearch = () => {
     const filteredData = data.filter(item =>
-      item.nama.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.nik.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.notelpon.toLowerCase().includes(searchText.toLowerCase())
+      item.name.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.position.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.office.toLowerCase().includes(searchText.toLowerCase())
     );
     setTableData(filteredData);
   };
@@ -136,29 +134,29 @@ const Laporan = () => {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden ">
+    <div className="flex h-screen overflow-hidden">
       {isSidebarOpen && (
-        <div className="flex-none w-64 bg-gray-800  text-white overflow-y-auto overflow-x-hidden">
-          <ul className="flex flex-col mt-6">
-            <div className='flex items-center ml-2 mb-8'>
-              <img src='/src/assets/image/logo.png' className="w-10" alt="Avatar" />
-              <span className="text-xl font-bold ml-2">DKP Lampung</span>
-            </div>
-            {Links.map((link) => (
-              <li className={`py-2 hover:bg-gray-700 ${link.link === activePage ? 'bg-gray-700' : ''}`} key={link.name}>
-                <Link
-                  to={link.link}
-                  className={`flex items-center pl-4 ${
-                    link.name === 'Home' ? 'marker bg-slate-700 h-1 w-4 rounded-full text-white' : ''
-                  }`}
-                >
-                  {link.icon && <span className="mr-2">{link.icon}</span>}
-                  {link.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+      <div className="flex-none w-64 bg-gray-800 text-white overflow-y-auto overflow-x-hidden">
+        <ul className="flex flex-col mt-6">
+          <div className='flex items-center ml-2 mb-8'>
+            <img src='/src/assets/image/logo.png' className="w-10" alt="Avatar" />
+            <span className="text-xl font-bold ml-2">DKP Lampung</span>
+          </div>
+          {Links.map((link) => (
+            <li className={`py-2 hover:bg-gray-700 ${link.link === activePage ? 'bg-gray-700' : ''}`} key={link.name}>
+              <Link
+                to={link.link}
+                className={`flex items-center pl-4 ${
+                  link.name === 'Home' ? 'marker bg-slate-700 h-1 w-4 rounded-full text-white' : ''
+                }`}
+              >
+                {link.icon && <span className="mr-2">{link.icon}</span>}
+                {link.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
       )}
       <div className="flex flex-col w-full md:w-auto flex-1">
         <div className="flex justify-between items-center shadow-md bg-gray-800 text-white py-4 px-4">
@@ -170,9 +168,9 @@ const Laporan = () => {
           <div className="flex items-center relative">
             <div className="text-sm text-gray-400 mr-6 ml-6">{formattedDateTime}</div>
             <div className="relative">
-              <button className="flex items-center mr-4 pl-4 focus:outline-none" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+             <button className="flex items-center mr-4 pl-4 focus:outline-none" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                 <img className="rounded-full ml-2 mr-2" src="/src/assets/image/profil.png" width="24" height="24" alt="User 01" />
-                Admin
+                Petugas
               </button>
               {isDropdownOpen && (
                 <ul className="absolute right-0 top-full mt-1 bg-gray-800 text-white rounded shadow-md">
@@ -195,39 +193,22 @@ const Laporan = () => {
         </div>
         <div>
           <div className="flex p-8">
-            <SummarizeRoundedIcon style={{fontSize:'40px', marginRight:'8px'}}/>
-            <h1 className='font-extrabold text-3xl'>Laporan</h1>
+            <ClassRoundedIcon style={{fontSize:'40px', marginRight:'8px'}}/>
+            <h1 className='font-extrabold text-3xl'>Buku Tamu</h1>
           </div>
           <div className="container w-full md:w-auto md:ml-6 md:mr-6 overflow-x-auto shadow-md">
-            <div id="recipients" className="p-10 mt-6 lg:mt-0 rounded  bg-white">
-              <div className="flex flex-col md:flex-row items-center justify-between mb-4">
-                <div className="flex items-center mb-2 md:mb-0">
-                  <input
-                    type="text"
-                    placeholder="Search"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    className="border border-gray-300 rounded px-2 py-1 mr-2"
-                  />
-                  <button onClick={handleSearch} className="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">
-                    Search
-                  </button>
-                </div>
-                <div className="ml-4 flex items-center mb-2 md:mb-0">
-                  <input
-                    type="date"
-                    placeholder="tanggal"
-                    className="border border-gray-300 rounded px-2 py-1 mr-2"
-                  />
-                  <button onClick={handleSearch} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-                    Filter
-                  </button>
-                </div>
-                <div className="flex justify-center items-center">
-                  <button onClick={handleAdd} className="bg-red-500 text-white px-4 py-2 rounded ml-auto mt-2 md:mt-0 hover:bg-red-600">
-                    <PictureAsPdfRoundedIcon style={{ marginRight: '10px' }} /> Export
-                  </button>
-                </div>
+            <div id="recipients" className="p-10 mt-6 lg:mt-0 rounded shadow bg-white">
+              <div className="flex items-center mb-2 md:mb-0">
+                <input
+                  type="text"
+                  placeholder="Search"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  className="border border-gray-300 rounded px-2 py-1 mr-2"
+                />
+                <button onClick={handleSearch} className="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">
+                  Search
+                </button>
               </div>
               <div className="overflow-x-auto">
                 <DataTable
@@ -285,4 +266,4 @@ const Laporan = () => {
   );
 };
 
-export default Laporan;
+export default BukuTamu;

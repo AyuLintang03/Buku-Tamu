@@ -196,7 +196,7 @@ const BukuTamu = () => {
             <ClassRoundedIcon style={{fontSize:'40px', marginRight:'8px'}}/>
             <h1 className='font-extrabold text-3xl'>Buku Tamu</h1>
           </div>
-          <div className="container w-full md:w-auto md:ml-6 md:mr-6 overflow-x-auto">
+          <div className="container w-full md:w-auto md:ml-6 md:mr-6 overflow-x-auto shadow-md">
             <div id="recipients" className="p-10 mt-6 lg:mt-0 rounded shadow bg-white">
               <div className="flex items-center mb-2 md:mb-0">
                 <input

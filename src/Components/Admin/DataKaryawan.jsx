@@ -215,7 +215,7 @@ const DataKaryawan = () => {
              <GroupRoundedIcon style={{fontSize:'40px', marginRight:'8px'}}/>
             <h1 className='font-extrabold text-3xl'>Data Karyawan</h1>
           </div>
-          <div className="container w-full md:w-auto md:ml-6 md:mr-6 overflow-x-auto">
+          <div className="container w-full md:w-auto md:ml-6 md:mr-6 overflow-x-auto shadow-md">
             <div id="recipients" className="p-10 mt-6 lg:mt-0 rounded shadow bg-white">
               <div className="flex flex-col md:flex-row items-center justify-between mb-4">
                 <div className="flex items-center mb-2 md:mb-0">
@@ -230,7 +230,7 @@ const DataKaryawan = () => {
                     Search
                   </button>
                 </div>
-                  <button onClick={openTambahPopup} className="bg-green-500 text-white px-4 py-2 rounded md:px-6 md:py-3 hover:bg-green-600">
+                  <button onClick={openTambahPopup} className="bg-green-500 text-white px-4 py-2 rounded md:px-3 md:py-3 hover:bg-green-600">
                     <AddRoundedIcon style={{ marginRight: '2px' }} />
                     Tambah
                   </button>

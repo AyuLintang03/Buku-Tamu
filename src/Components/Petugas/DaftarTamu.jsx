@@ -108,11 +108,11 @@ const DaftarTamu = () => {
   },
 ];
   const Links = [
-    { name: 'Dashboard', link: '/dashboard', icon: <DashboardRoundedIcon /> },
-    { name: 'Data Karyawan', link: '/datakaryawan', icon: <GroupRoundedIcon /> },
-    { name: 'Daftar Tamu', link: '/daftartamu', icon: <GroupsRoundedIcon /> },
-    { name: 'Buku Tamu', link: '/bukutamu', icon: <ClassRoundedIcon /> },
-    { name: 'laporan', link: '/laporan', icon: <SummarizeRoundedIcon /> },
+     { name: 'Dashboard', link: '/petugas/dashboard', icon: <DashboardRoundedIcon /> },
+    { name: 'Data Karyawan', link: '/petugas/datakaryawan', icon: <GroupRoundedIcon /> },
+    { name: 'Daftar Tamu', link: '/petugas/daftartamu', icon: <GroupsRoundedIcon /> },
+    { name: 'Buku Tamu', link: '/petugas/bukutamu', icon: <ClassRoundedIcon /> },
+    { name: 'laporan', link: '/petugas/laporan', icon: <SummarizeRoundedIcon /> },
   ];
 
   const formattedDateTime = moment().format('DD/MM/YYYY HH:mm');
@@ -185,7 +185,7 @@ const DaftarTamu = () => {
             <div className="relative">
              <button className="flex items-center mr-4 pl-4 focus:outline-none" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                 <img className="rounded-full ml-2 mr-2" src="/src/assets/image/profil.png" width="24" height="24" alt="User 01" />
-                Admin
+                Petugas
               </button>
               {isDropdownOpen && (
                 <ul className="absolute right-0 top-full mt-1 bg-gray-800 text-white rounded shadow-md">

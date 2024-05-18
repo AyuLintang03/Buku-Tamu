@@ -1,6 +1,13 @@
+*{
+    padding: 0px;
+    margin: 0px;
+}
+.posisi{
+    margin-top: 15rem;
+    display: flex;
+}
 .ocean {
     height: 100px;
-    /* change the height of the waves here */
     width: 100%;
     position: absolute;
     bottom: 0;
@@ -47,24 +54,15 @@
         transform: translateX(-50%);
     }
 }
-@media screen and (max-width: 768px) {
-    .ocean {
-        height: auto;
-        position: relative;
-        margin-top: 6rem;    
-    }
-
-    
-}
 @media screen and (max-width: 1000px) {
     .ocean {
-        height: auto;
-        position: relative;
-        margin-top: 6rem;
-    }
-
-
+            height: auto;
+            position: relative;
+            margin-top: 6rem;
+        }
+    
 }
+
 .button-masuk{
     background-color: #5356FF;
 }
@@ -78,24 +76,3 @@ section {
 [x-cloak=""] {
     display: none;
 }
-/* Add this CSS to your stylesheet */
-.current-date-cell .rbc-day-bg {
-    position: relative;
-}
-
-.current-date-cell .rbc-day-bg:after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 24px;
-    /* Adjust based on your preference */
-    height: 24px;
-    /* Adjust based on your preference */
-    border-radius: 50%;
-    background-color: yellow;
-    /* Change the color as needed */
-    z-index: -1;
-}
-
