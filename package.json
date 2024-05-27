@@ -12,6 +12,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@material-tailwind/react": "^2.1.9",
     "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.15.15",
     "@react-spring/web": "^9.7.3",
@@ -24,6 +25,7 @@
     "react-dom": "^18.2.0",
     "react-google-calendar-api": "^2.3.0",
     "react-router-dom": "^6.23.0",
+    "react-slideshow-image": "^4.3.1",
     "react-spring": "^9.7.3"
   },
   "devDependencies": {

@@ -12,6 +12,7 @@ import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
 import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
 import SummarizeRoundedIcon from '@mui/icons-material/SummarizeRounded';
 import '../../assets/Style/style.css';
+import { useSpring, animated } from '@react-spring/web';
 
 const localizer = momentLocalizer(moment);
 
@@ -25,6 +26,7 @@ const Dashboard = () => {
   const [newEventStart, setNewEventStart] = useState('');
   const [newEventEnd, setNewEventEnd] = useState('');
   const [showPopup, setShowPopup] = useState(false);
+  const [closingPopup, setClosingPopup] = useState(false);
 
   const formattedDateTime = moment().format('DD/MM/YYYY HH:mm');
 
@@ -72,37 +74,61 @@ const Dashboard = () => {
       return {
         className: 'current-date-cell bg-blue-300 text-white',
       };
-      
     }
     return {};
   };
 
+  const popupAnimation = useSpring({
+    opacity: showPopup ? 1 : 0,
+    transform: showPopup ? 'translateY(0%)' : 'translateY(-100%)',
+  });
+
+  const closingPopupAnimation = useSpring({
+    opacity: closingPopup ? 0 : 1,
+    transform: closingPopup ? 'translateY(-100%)' : 'translateY(0%)',
+  });
+
+  const handleClosePopup = () => {
+    setClosingPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+      setClosingPopup(false);
+    }, 300); // Adjust the duration according to your animation timing
+  };
+
+  const sidebarAnimation = useSpring({
+    width: isSidebarOpen ? 240 : 0,
+    opacity: isSidebarOpen ? 1 : 0,
+  });
+  const navbarAnimation = useSpring({
+    height: isDropdownOpen ? 90 : 0,
+    opacity: isDropdownOpen ? 1 : 0,
+  });
+  
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
-      {isSidebarOpen && (
-        <div className="flex-none w-64 bg-gray-800 text-white overflow-y-auto overflow-x-hidden">
-          <ul className="flex flex-col mt-6">
-            <div className='flex items-center ml-2 mb-8'>
-              <img src='/src/assets/image/logo.png' className="w-10" alt="Avatar" />
-              <span className="text-xl font-bold ml-2">DKP Lampung</span>
-            </div>
-            {Links.map((link) => (
-              <li className={`py-2 hover:bg-gray-700 ${link.link === activePage ? 'bg-gray-700' : ''}`} key={link.name}>
-                <Link
-                  to={link.link}
-                  className={`flex items-center pl-4 ${
-                    link.name === 'Home' ? 'marker bg-slate-700 h-1 w-4 rounded-full text-white' : ''
-                  }`}
-                >
-                  {link.icon && <span className="mr-2">{link.icon}</span>}
-                  <span className={moment(currentDate).date() === 1 ? 'current-date' : ''}>{link.name}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <animated.div style={sidebarAnimation} className="flex-none w-64 bg-gray-800 text-white overflow-y-auto overflow-x-hidden">
+        <ul className="flex flex-col mt-6">
+          <div className='flex items-center ml-2 mb-8'>
+            <img src='/src/assets/image/logo.png' className="w-10" alt="Avatar" />
+            <span className="text-xl font-bold ml-2">DKP Lampung</span>
+          </div>
+          {Links.map((link) => (
+            <li className={`py-2 hover:bg-gray-700 ${link.link === activePage ? 'bg-gray-700' : ''}`} key={link.name}>
+              <Link
+                to={link.link}
+                className={`flex items-center pl-4 ${
+                  link.name === 'Home' ? 'marker bg-slate-700 h-1 w-4 rounded-full text-white' : ''
+                }`}
+              >
+                {link.icon && <span className="mr-2">{link.icon}</span>}
+                <span className={moment(currentDate).date() === 1 ? 'current-date' : ''}>{link.name}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </animated.div>
       {/* End of Sidebar */}
       <div className="flex flex-col w-full md:w-auto flex-1">
         <div className="flex justify-between items-center shadow-md bg-gray-800 text-white py-4 px-4">
@@ -118,8 +144,7 @@ const Dashboard = () => {
                 <img className="rounded-full ml-2 mr-2" src="/src/assets/image/profil.png" width="24" height="24" alt="User 01" />
                 Admin
               </button>
-              {isDropdownOpen && (
-                <ul className="absolute right-0 top-full mt-1 bg-gray-800 text-white rounded shadow-md">
+                <animated.ul style={navbarAnimation} className="absolute right-0 top-full mt-1 bg-gray-800 text-white rounded shadow-md">
                   <li className="py-2 hover:bg-gray-700">
                     <Link to="/UserProfil">
                       <button className="flex items-center pl-4 pr-2 focus:outline-none" onClick={handleLogout}>
@@ -134,8 +159,7 @@ const Dashboard = () => {
                       Logout
                     </button>
                   </li>
-                </ul>
-              )}
+                </animated.ul>
             </div>
           </div>
         </div>
@@ -198,7 +222,7 @@ const Dashboard = () => {
       {showPopup && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
           <div className="absolute inset-0 bg-gray-500 bg-opacity-50"></div>
-          <div className="relative bg-white p-8 rounded-lg z-50">
+          <animated.div style={closingPopup ? closingPopupAnimation : popupAnimation}  className="relative bg-white p-8 rounded-lg z-50">
             <h3 className="text-lg font-semibold mb-4">Add Event</h3>
             <input
               type="text"
@@ -223,7 +247,7 @@ const Dashboard = () => {
             />
             <div className="flex justify-end">
               <button
-                onClick={() => setShowPopup(false)}
+                onClick={handleClosePopup}
                 className="px-4 py-2 mr-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none"
               >
                 Cancel
@@ -235,7 +259,7 @@ const Dashboard = () => {
                 Tambah Agenda
               </button>
             </div>
-          </div>
+          </animated.div>
         </div>
       )}
     </div>

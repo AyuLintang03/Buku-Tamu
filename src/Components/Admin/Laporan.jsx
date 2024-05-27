@@ -12,13 +12,13 @@ import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
 import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
 import SummarizeRoundedIcon from '@mui/icons-material/SummarizeRounded';
 import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
-import RemoveRedEyeRoundedIcon from '@mui/icons-material/RemoveRedEyeRounded';
-import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+import { useSpring, animated } from '@react-spring/web';
 
 const Laporan = () => {
   const location = useLocation();
   const [selectedRow, setSelectedRow] = useState(null);
   const [popupOpen, setPopupOpen] = useState(false);
+  const [closingPopup, setClosingPopup] = useState(false);
   
   const openPopup = (row) => {
     setSelectedRow(row); // Set the selected row
@@ -82,12 +82,12 @@ const Laporan = () => {
       name: 'Actions',
       cell: (row) => (
         <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-          <button onClick={() => openPopup(row)} className='bg-blue-600 text-white px-2 py-2 rounded flex items-center hover:bg-blue-700'>
-            <RemoveRedEyeRoundedIcon style={{ fontSize: '15px'}} />
-          </button>
-          <button className='bg-red-600 text-white px-2 py-2 rounded flex items-center hover:bg-red-700'>
-            <DeleteForeverRoundedIcon style={{ fontSize: '15px'}}/>
-          </button>
+          <button onClick={() => openPopup(row)} className='h-8 w-8 hover:shadow-md hover:translate-y-[2px]'>
+          <img src="/src/assets/image/icons8-eye.gif" alt="Lihat"  style={{fontSize:'15px'}} />
+        </button>
+          <button className='h-8 w-8 hover:shadow-md hover:translate-y-[2px]'>
+          <img src="/src/assets/image/icons8-trash.gif" alt="Hapus" style={{ fontSize: '15px'}} />
+        </button>
         </div>
       ),
       $grow: 1, // Using $grow instead of grow
@@ -135,10 +135,33 @@ const Laporan = () => {
     setShowAddModal(false);
   };
 
+  const sidebarAnimation = useSpring({
+    width: isSidebarOpen ? 240 : 0,
+    opacity: isSidebarOpen ? 1 : 0,
+  });
+  const navbarAnimation = useSpring({
+    height: isDropdownOpen ? 90 : 0,
+    opacity: isDropdownOpen ? 1 : 0,
+  });
+
+  const AnimationPopup = useSpring ({
+    opacity : popupOpen ? 1 : 0,
+    transform : popupOpen ? 'translateY(0%)' : 'translateY(-100%)',
+  });
+  const AnimationClosingPopup = useSpring ({
+   opacity: closingPopup ? 0 : 1,
+    transform: closingPopup ? 'translateY(-100%)' : 'translateY(0%)',
+  });
+  const handleClosePopup = () => {
+    setClosingPopup(true);
+    setTimeout(() => {
+      setPopupOpen(false);
+      setClosingPopup(false);
+    }, 300); 
+  }
   return (
     <div className="flex h-screen overflow-hidden ">
-      {isSidebarOpen && (
-        <div className="flex-none w-64 bg-gray-800  text-white overflow-y-auto overflow-x-hidden">
+        <animated.div style={sidebarAnimation} className="flex-none w-64 bg-gray-800  text-white overflow-y-auto overflow-x-hidden">
           <ul className="flex flex-col mt-6">
             <div className='flex items-center ml-2 mb-8'>
               <img src='/src/assets/image/logo.png' className="w-10" alt="Avatar" />
@@ -158,8 +181,7 @@ const Laporan = () => {
               </li>
             ))}
           </ul>
-        </div>
-      )}
+        </animated.div>
       <div className="flex flex-col w-full md:w-auto flex-1">
         <div className="flex justify-between items-center shadow-md bg-gray-800 text-white py-4 px-4">
           <div className="flex items-center">
@@ -174,13 +196,14 @@ const Laporan = () => {
                 <img className="rounded-full ml-2 mr-2" src="/src/assets/image/profil.png" width="24" height="24" alt="User 01" />
                 Admin
               </button>
-              {isDropdownOpen && (
-                <ul className="absolute right-0 top-full mt-1 bg-gray-800 text-white rounded shadow-md">
+                <animated.ul style={navbarAnimation} className="absolute right-0 top-full mt-1 bg-gray-800 text-white rounded shadow-md">
                   <li className="py-2 hover:bg-gray-700">
-                    <button className="flex items-center pl-4 pr-2 focus:outline-none" onClick={handleLogout}>
-                      <Person2RoundedIcon className="mr-2" />
-                      Profil
-                    </button>
+                    <Link to="/UserProfil">
+                      <button className="flex items-center pl-4 pr-2 focus:outline-none" onClick={handleLogout}>
+                        <Person2RoundedIcon className="mr-2" />
+                        Profil
+                      </button>
+                    </Link>
                   </li>
                   <li className="py-2 hover:bg-gray-700">
                     <button className="flex items-center pl-4 pr-2 focus:outline-none" onClick={handleLogout}>
@@ -188,8 +211,7 @@ const Laporan = () => {
                       Logout
                     </button>
                   </li>
-                </ul>
-              )}
+                </animated.ul>
             </div>
           </div>
         </div>
@@ -242,7 +264,7 @@ const Laporan = () => {
             </div>
             {selectedRow && popupOpen && (
               <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
-                <div className=" bg-white p-8 w-auto rounded-lg shadow-lg">
+                <animated.div style={closingPopup ? AnimationClosingPopup : AnimationPopup} className=" bg-white p-8 w-auto rounded-lg shadow-lg">
                   <h2 className="text-xl font-semibold mb-4 text-center">Detail Tamu</h2>
                   <div className='flex items-center justify-center'>
                     <label htmlFor="profile-picture-upload" className="relative inline-flex mb-4 items-center mr-5 cursor-pointer">
@@ -261,9 +283,8 @@ const Laporan = () => {
                   <div className="mb-2">Jam Masuk: {selectedRow.jam_masuk}</div>
                   <div className="mb-2">Jam Keluar: {selectedRow.jam_keluar}</div>
                   <div className="mb-2">Alamat: {selectedRow.alamat}</div></div>
-                  <div className='flex items-center justify-center'><button className="bg-blue-600 hover:bg-blue-700 w-full text-white px-4 py-2 rounded mt-4" onClick={closePopup}>Close</button></div>
-                  
-                </div>
+                  <div className='flex items-center justify-center'><button className="bg-blue-600 hover:bg-blue-700 w-full text-white px-4 py-2 rounded mt-4" onClick={handleClosePopup}>Close</button></div>
+                </animated.div>
               </div>
             )}
             {showAddModal && (
