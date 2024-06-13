@@ -17,12 +17,15 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'username' => 'required|max:255',
-            'name' => 'required|max:255',
+            'user_name' => 'required|max:255',
+            'email' => 'required|max:255',
             'nik' => 'required|max:255',
             'no_tlp' => 'required|max:255',
             'jabatan' => 'required|max:255',
             'bidang' => 'required|max:255',
+            'alamat' => 'required|max:255',
             'password' => 'required',
+            'role' => 'required',
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -38,11 +41,14 @@ public function update(Request $request, $id)
 
     $validatedData = $request->validate([
         'username' => 'required|max:255',
-        'name' => 'required|max:255',
+        'user_name' => 'required|max:255',
+        'email' => 'required|max:255',
         'nik' => 'required|max:255|unique:users,nik,' . $user->id,
         'no_tlp' => 'required|max:255',
         'jabatan' => 'required|max:255',
         'bidang' => 'required|max:255',
+        'alamat' => 'required|max:255',
+        'role' => 'required|max:255',
         'password' => 'nullable',
     ]);
 
@@ -72,7 +78,7 @@ public function search(Request $request)
 {
     $search = $request->input('search');
     $users = User::where('username', 'like', '%' . $search . '%')
-                  ->orWhere('name', 'like', '%' . $search . '%')
+                  ->orWhere('user_name', 'like', '%' . $search . '%')
                   ->orWhere('nik', 'like', '%' . $search . '%')
                   ->orWhere('no_tlp', 'like', '%' . $search . '%')
                   ->orWhere('jabatan', 'like', '%' . $search . '%')
@@ -81,8 +87,5 @@ public function search(Request $request)
 
     return response()->json($users);
 }
-
-
-
 
 }

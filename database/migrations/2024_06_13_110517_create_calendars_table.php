@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('calenders', function (Blueprint $table) {
+        Schema::create('calendars', function (Blueprint $table) {
             $table->id();
-            $table->string('keterangan')->nullable();
-            $table->dateTime('tanggal_start')->nullable();
-            $table->dateTime('tanggal_end')->nullable();
+             $table->string('title')->nullable();
+            $table->dateTime('start')->nullable();
+            $table->dateTime('end')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('calenders');
+        Schema::dropIfExists('calendars');
     }
 };

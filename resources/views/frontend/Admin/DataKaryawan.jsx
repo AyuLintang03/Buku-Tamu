@@ -17,6 +17,7 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import RemoveRedEyeRoundedIcon from '@mui/icons-material/RemoveRedEyeRounded';
 import CloseIcon from '@mui/icons-material/Close';
 import { useSpring, animated } from '@react-spring/web';
+import { RollerShades } from '@mui/icons-material';
 
 const DataKaryawan = () => {
   const location = useLocation();
@@ -88,12 +89,15 @@ const deleteKaryawan = async (id) => {
 
 const [formData, setFormData] = useState({
   username: '',
-  name: '',
+  user_name: '',
   nik: '',
+  email: '',
   no_tlp: '',
   jabatan: '',
   bidang: '',
-  password: ''
+  alamat: '',
+  password: '',
+  role: '',
 });
 
 const handleInputChange = (e) => {
@@ -119,11 +123,13 @@ const handleSubmit = async (e) => {
       alert('Data berhasil ditambahkan!');
       setFormData({
       username: '',
-      name: '',
+      user_name: '',
       nik: '',
+      email: '',
       no_tlp: '',
       jabatan: '',
       bidang: '',
+      alamat: '',
       password: ''});
       setTambahOpen(false);
       fetchKaryawan();
@@ -145,12 +151,15 @@ const handleUpdate = (row) => {
   if (karyawanToEdit) {
     setFormData({
       username: karyawanToEdit.username,
-      name: karyawanToEdit.name,
+      user_name: karyawanToEdit.user_name,
+      email: karyawanToEdit.email,
       nik: karyawanToEdit.nik,
       no_tlp: karyawanToEdit.no_tlp,
       jabatan: karyawanToEdit.jabatan,
       bidang: karyawanToEdit.bidang,
+      alamat: karyawanToEdit.alamat,
       password: '', 
+      role: karyawanToEdit.role,
     });
   }
 };
@@ -166,12 +175,15 @@ const handleSubmitUpdate = async (e) => {
   try {
     const updatedData = {
       username: formData.username || selectedRow.username,
-      name: formData.name || selectedRow.name,
+      user_name: formData.user_name || selectedRow.user_name,
+      email: formData.email || selectedRow.email,
       nik: formData.nik || selectedRow.nik,
       no_tlp: formData.no_tlp || selectedRow.no_tlp,
       jabatan: formData.jabatan || selectedRow.jabatan,
       bidang: formData.bidang || selectedRow.bidang,
+      alamat: formData.alamat || selectedRow.alamat,
       password: formData.password || '',
+      role: formData.role || selectedRow.role,
     };
 
     const response = await fetch(`/admin/datakaryawan/${selectedRow.id}`, {
@@ -188,11 +200,13 @@ const handleSubmitUpdate = async (e) => {
       console.log(data.message);
       setFormData({
         username: '',
-        name: '',
+        user_name: '',
+        email: '',
         nik: '',
         no_tlp: '',
         jabatan: '',
         bidang: '',
+        alamat: '',
         password: '',
       });
       setEditOpen(false);
@@ -252,7 +266,7 @@ const handleSearch = async () => {
   };
   const columns = [
     {
-    name: 'ID',
+    name: 'No',
     cell: (row, index) => <div>{index + 1}</div>,
     sortable: true,
     $grow: 1,
@@ -292,7 +306,7 @@ const handleSearch = async () => {
             <img src="/build/assets/images/icons8-pencil.gif" alt="" style={{fontSize:'15px'}} />
           </button>
           <button className='h-8 w-8 hover:shadow-md hover:translate-y-[2px]' onClick={() => openPopup(row)}>
-            <img src="/build/assets/images/icons8-eye.gif" alt="" srcset="" />
+            <img src="/build/assets/images/icons8-eye.gif" alt=""  />
           </button>
           <button onClick={() => handleDelete(row)}  className='h-8 w-8 hover:shadow-md hover:translate-y-[2px]'>
             <img src="/build/assets/images/icons8-trash.gif" alt="" style={{ fontSize: '15px'}} />
@@ -306,9 +320,9 @@ const handleSearch = async () => {
   const Links = [
     { name: 'Dashboard', link: '/admin/dashboard', icon: <DashboardRoundedIcon /> },
     { name: 'Data Karyawan', link: '/admin/datakaryawan', icon: <GroupRoundedIcon /> },
-    { name: 'Daftar Tamu', link: '/daftartamu', icon: <GroupsRoundedIcon /> },
-    { name: 'Buku Tamu', link: '/bukutamu', icon: <ClassRoundedIcon /> },
-    { name: 'laporan', link: '/laporan', icon: <SummarizeRoundedIcon /> },
+    { name: 'Daftar Tamu', link: '/admin/daftartamu', icon: <GroupsRoundedIcon /> },
+    { name: 'Buku Tamu', link: '/admin/bukutamu', icon: <ClassRoundedIcon /> },
+    { name: 'laporan', link: '/admin/laporan', icon: <SummarizeRoundedIcon /> },
   ];
 
   const formattedDateTime = moment().format('DD/MM/YYYY HH:mm');
@@ -517,13 +531,13 @@ const handleEditClosePopup = () => {
                   </div>
                   <div className=' grid items-center justify-center grid-cols-2 gap-2 '>
                     <div className="mb-2">Username: {selectedRow.username}</div>
-                  <div className="mb-2">Nama: {selectedRow.name}</div>
+                  <div className="mb-2">Nama: {selectedRow.user_name}</div>
                   <div className="mb-2">Email: {selectedRow.email}</div>
                   <div className="mb-2">NIK: {selectedRow.nik}</div>
                   <div className="mb-2">No Telpon: {selectedRow.no_tlp}</div>
                   <div className="mb-2">Jabatan: {selectedRow.jabatan}</div>
                   <div>Bidang: {selectedRow.bidang}</div>
-                  <div className="mb-2">Password: {selectedRow.password}</div>
+                  <div className="mb-2">Password: {selectedRow.password}</div> 
                   <div className="mb-2">Alamat: {selectedRow.alamat}</div></div>
                   <div className='flex items-center justify-center'><button className="hover:bg-blue-700 bg-blue-600 w-full text-white px-4 py-2 rounded mt-4" onClick={handleClosePopup}>Close</button></div>
                   
@@ -545,7 +559,11 @@ const handleEditClosePopup = () => {
                     </div>
                     <div className="mb-2">
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nama</label>
-                      <input type="text" id="nama" name='name' value={formData.name} onChange={handleInputChange} className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder="nama" required/>
+                      <input type="text" id="user_name" name='user_name' value={formData.user_name} onChange={handleInputChange} className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder="user_name" required/>
+                    </div>
+                    <div className="mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                      <input type="email" id="email" name='email' value={formData.email} onChange={handleInputChange} className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder="email" required/>
                     </div>
                     <div className="mb-1">
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">NIK</label>
@@ -564,10 +582,25 @@ const handleEditClosePopup = () => {
                       <input name='bidang' value={formData.bidang} onChange={handleInputChange} type="text" id="bidang" className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder="Bidang" required/>
                     </div>
                     <div className="mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Alamat</label>
+                      <input type="text" id="alamat" name='alamat' value={formData.alamat} onChange={handleInputChange} className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder="alamat" required/>
+                    </div>
+                    <div className="mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tujuan</label>
+                      <select  name="role"
+                      value={formData.role}
+                      onChange={handleInputChange}
+                      className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500">
+                        <option value="">Pilih Tipe User</option>
+                        <option value="pegawai">Petugas</option>
+                        <option value="operator">Operator</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                    </div>    
+                    <div className="mb-2">
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
                       <input name='password' value={formData.password} onChange={handleInputChange} type="password" id="password" className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder="password" required/>
                     </div>
-                    <div></div>
                     <button type="reset" className="button-masuk col-span-2 md:col-span-1 w-full md:w-auto flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Reset</button>
                     <button type="submit" className="button-masuk col-span-2 md:col-span-1 w-full md:w-auto flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Simpan</button>
                   </form>
@@ -589,7 +622,11 @@ const handleEditClosePopup = () => {
                     </div>
                     <div className="mb-2">
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nama</label>
-                      <input type="text" id="nama" name='name' value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder={selectedRow.name} />
+                      <input type="text" id="user_name" name='user_name' value={formData.user_name} onChange={(e) => setFormData({ ...formData, user_name: e.target.value })} className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder={selectedRow.user_name} />
+                    </div>
+                    <div className="mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                      <input type="email" id="email" name='email' value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder={selectedRow.email} />
                     </div>
                     <div className="mb-1">
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">NIK</label>
@@ -608,12 +645,28 @@ const handleEditClosePopup = () => {
                       <input name='bidang' value={formData.bidang} onChange={(e) => setFormData({ ...formData, bidang: e.target.value })}type="text" id="bidang" className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder={selectedRow.bidang} />
                     </div>
                     <div className="mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Alamat</label>
+                      <input type="text" id="alamat" name='alamat' value={formData.alamat} onChange={(e) => setFormData({ ...formData, alamat: e.target.value })} className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder={selectedRow.alamat} />
+                    </div>
+                    <div className="mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tujuan</label>
+                      <select  name="role"
+                      value={formData.role}
+                      onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                      placeholder={selectedRow.role}
+                      className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500">
+                        <option value="">Pilih Tipe User</option>
+                        <option value="pegawai">Petugas</option>
+                        <option value="operator">Operator</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                    </div>  
+                    <div className="mb-2">
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
                       <input name='password' value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })}type="password" id="password" className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder="password" />
                     </div>
-                    <div></div>
-                    <button type="reset" className="button-masuk col-span-2 md:col-span-1 w-full md:w-auto flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Reset</button>
-                    <button type="submit" className="button-masuk col-span-2 md:col-span-1 w-full md:w-auto flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Simpan</button>
+                    <button type="reset" className="button-masuk col-span-2 md:col-span-3 w-full md:w-auto flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Reset</button>
+                    <button type="submit" className="button-masuk col-span-2 md:col-span-3 w-full md:w-auto flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Simpan</button>
                   </form>
                 </animated.div>
               </div>

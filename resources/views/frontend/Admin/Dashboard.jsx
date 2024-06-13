@@ -46,28 +46,136 @@ const Dashboard = () => {
   const Links = [
     { name: 'Dashboard', link: '/admin/dashboard', icon: <DashboardRoundedIcon /> },
     { name: 'Data Karyawan', link: '/admin/datakaryawan', icon: <GroupRoundedIcon /> },
-    { name: 'Daftar Tamu', link: '/petugas/daftartamu', icon: <GroupsRoundedIcon /> },
-    { name: 'Buku Tamu', link: '/petugas/bukutamu', icon: <ClassRoundedIcon /> },
-    { name: 'laporan', link: '/petugas/laporan', icon: <SummarizeRoundedIcon /> },
+    { name: 'Daftar Tamu', link: '/admin/daftartamu', icon: <GroupsRoundedIcon /> },
+    { name: 'Buku Tamu', link: '/admin/bukutamu', icon: <ClassRoundedIcon /> },
+    { name: 'laporan', link: '/admin/laporan', icon: <SummarizeRoundedIcon /> },
   ];
 
-  const addEvent = () => {
-    const newEvent = {
-      title: newEventTitle,
-      start: new Date(newEventStart),
-      end: new Date(newEventEnd),
-    };
-    setEvents([...events, newEvent]);
-    setNewEventTitle('');
-    setNewEventStart('');
-    setNewEventEnd('');
-    setShowPopup(false);
-    setShowPopupclose(false);
-  };
+   const [usersCount, setUsersCount] = useState(0);
+  const [tamuTundaCount, setTamuTundaCount] = useState(0);
+  const [tamuTotalCount, setTamuTotalCount] = useState(0);
 
-  const handleTodayClick = () => {
-    setCurrentDate(new Date());
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('/admin/dashboard/data');
+        const { usersCount, tamuTundaCount, tamuTotalCount } = response.data;
+        setUsersCount(usersCount);
+        setTamuTundaCount(tamuTundaCount);
+        setTamuTotalCount(tamuTotalCount);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const [kalender, setKalender] = useState([]);
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+ 
+  useEffect(() => {
+    fetchKalender();
+  }, []);
+  
+
+  const fetchKalender = async () => {
+  try {
+    const response = await fetch('/admin/kalender', {
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+    });
+    const data = await response.json();
+    setKalender(data);
+  } catch (error) {
+    console.error('Error fetching karyawan:', error);
+  }
+};
+
+const [formData, setFormData] = useState({
+  title: '',
+  start: '',
+  end: '',
+});
+
+const handleInputChange = (e) => {
+  setFormData({ ...formData, [e.target.name]: e.target.value });
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const response = await fetch('/admin/kalender/create', {
+      method: 'POST',
+      headers: {
+  'Content-Type': 'application/json',
+  'X-CSRF-TOKEN': csrfToken
+},
+      body: JSON.stringify(formData)
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data.message); 
+      alert('Data berhasil ditambahkan!');
+      setFormData({
+      title: '',
+      start: '',
+      end: '',
+     });
+      setShowPopup(false);
+      fetchKalender();
+    } else {
+      console.error('Gagal menambahkan data Kalender');
+    }
+  } catch (error) {
+    console.error('Terjadi kesalahan:', error);
+  }
+};
+
+const [eventToDelete, setEventToDelete] = useState(null);
+const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+
+const handleDeleteEvent = (event) => {
+  setEventToDelete(event);
+  setShowConfirmDelete(true);
+};
+
+
+const confirmDeleteEvent = async () => {
+  try {
+    const response = await fetch(`/admin/kalender/delete/${eventToDelete.id}`, {
+      method: 'DELETE',
+      headers: {
+        'X-CSRF-TOKEN': csrfToken,
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data.message);
+      fetchKalender(); // Refresh data kalender setelah menghapus event
+      setEventToDelete(null);
+      setShowConfirmDelete(false);
+    } else {
+      console.error('Gagal menghapus event');
+    }
+  } catch (error) {
+    console.error('Terjadi kesalahan:', error);
+  }
+};
+const [eventToShow, setEventToShow] = useState(null);
+const [showEventDetails1, setShowEventDetails1] = useState(false);
+
+
+
+const showEventDetails = (event) => {
+  setEventToShow(event);
+  setShowEventDetails1(true);
+};
 
   const customDayProp = (date) => {
     if (moment(date).isSame(moment(), 'day')) {
@@ -203,7 +311,7 @@ const Dashboard = () => {
                 <div className="flex items-center space-x-2 rtl:space-x-reverse text-sm font-medium text-gray-500 dark:text-gray-200">
                   <span>Buku Tamu Yang Ditunda</span>
                 </div>
-                <div className="text-3xl">50</div>
+                <div className="text-3xl">{tamuTundaCount}</div>
               </div>
             </div>
             <div className="relative p-6 rounded-2xl shadow-md bg-white">
@@ -211,7 +319,7 @@ const Dashboard = () => {
                 <div className="flex items-center space-x-2 rtl:space-x-reverse text-sm font-medium text-gray-500 dark:text-gray-200">
                   <span>Total Tamu</span>
                 </div>
-                <div className="text-3xl">50</div>
+                <div className="text-3xl">{tamuTotalCount}</div>
               </div>
             </div>
             <div className="relative p-6 rounded-2xl shadow-md bg-white">
@@ -219,7 +327,7 @@ const Dashboard = () => {
                 <div className="flex items-center space-x-2 rtl:space-x-reverse text-sm font-medium text-gray-500 dark:text-gray-200">
                   <span>Total Pegawai</span>
                 </div>
-                <div className="text-3xl">50</div>
+                <div className="text-3xl">{usersCount}</div>
               </div>
             </div>
           </div>
@@ -227,13 +335,35 @@ const Dashboard = () => {
             {/* Calendar Card */}
             <div className="bg-white p-6 rounded-lg shadow-md">
               {/* Calendar Component */}
-              <Calendar 
-                localizer={localizer}
-                events={events}
-                startAccessor="start"
-                endAccessor="end"
-                style={{ height: 350 }} // Mengatur warna teks menjadi hijau
-                dayPropGetter={customDayProp}
+              <Calendar
+              localizer={localizer}
+              events={kalender}
+              startAccessor="start"
+              endAccessor="end"
+              style={{ height: 450 }}
+              dayPropGetter={customDayProp}
+                views={['month','agenda']}
+              eventPropGetter={(event) => ({
+                style: {
+                  backgroundColor: 'darkblue',
+                  color: 'white',
+                },
+              })} 
+             components={{
+                  event: ({ event }) => (
+                    
+                    <div
+                    onDoubleClick={() => handleDeleteEvent(event)}
+                    className="cursor-pointer"
+                    >
+                      <span>{event.title}</span>
+                     {/* <ExitToAppIcon onClick={() => showEventDetails(event)}/>
+                      <button >lihat</button>*/}
+                    </div>
+                    
+                  ),
+                }}
+                
               />
               <div className="flex justify-end mt-4"> {/* Container untuk tombol "Add" */}
                 <button
@@ -253,26 +383,34 @@ const Dashboard = () => {
           <div className="absolute inset-0 bg-gray-500 bg-opacity-50"></div>
           <animated.div style={closingPopup ? closingPopupAnimation : popupAnimation}  className="relative bg-white p-8 rounded-lg z-50">
             <h3 className="text-lg font-semibold mb-4">Add Event</h3>
+            <form onSubmit={handleSubmit}>
             <input
               type="text"
               placeholder="Event title"
+              name='title'
+              id='title'
               className="px-3 py-1 border border-gray-300 rounded-md mb-2 w-full"
-              value={newEventTitle}
-              onChange={(e) => setNewEventTitle(e.target.value)}
+              value={formData.title}
+              maxLength={20}
+              onChange={handleInputChange}
             />
             <input
               type="datetime-local"
               placeholder="Start date"
+              name='start'
+              id='start'
               className="px-3 py-1 border border-gray-300 rounded-md mb-2 w-full"
-              value={newEventStart}
-              onChange={(e) => setNewEventStart(e.target.value)}
+              value={formData.start}
+              onChange={handleInputChange}
             />
             <input
               type="datetime-local"
               placeholder="End date"
+              name='end'
+              id='end'
               className="px-3 py-1 border border-gray-300 rounded-md mb-2 w-full"
-              value={newEventEnd}
-              onChange={(e) => setNewEventEnd(e.target.value)}
+              value={formData.end}
+              onChange={handleInputChange}
             />
             <div className="flex justify-end">
               <button
@@ -282,12 +420,12 @@ const Dashboard = () => {
                 Cancel
               </button>
               <button
-                onClick={addEvent}
                 className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
               >
                 Tambah Agenda
               </button>
             </div>
+            </form>
           </animated.div>
         </div>
       )}
@@ -317,6 +455,58 @@ const Dashboard = () => {
           </animated.div>
         </div>
       )}
+      {showConfirmDelete && (
+  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
+    <div className="absolute inset-0 bg-gray-500 bg-opacity-50"></div>
+    <div className="relative bg-white p-8 rounded-lg z-50">
+      <h3 className="text-lg font-semibold mb-4">Konfirmasi Penghapusan</h3>
+      <p>Apakah Anda yakin ingin menghapus event "{eventToDelete.title}"?</p>
+      <div className="flex justify-end mt-4">
+        <button
+          onClick={() => setShowConfirmDelete(false)}
+          className="px-4 py-2 mr-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none"
+        >
+          Batal
+        </button>
+        <button
+          onClick={confirmDeleteEvent}
+          className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
+        >
+          Hapus
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+{showEventDetails1 && (
+  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
+    <div className="absolute inset-0 bg-gray-500 bg-opacity-50"></div>
+    <div className="relative bg-white p-8 rounded-lg z-50">
+      <h3 className="text-lg font-semibold mb-4">Detail Event</h3>
+      <p>
+        <strong>Judul:</strong> {eventToShow.title}
+      </p>
+      <p>
+        <strong>Tanggal Mulai:</strong>{' '}
+        {moment(eventToShow.start).format('DD/MM/YYYY HH:mm')}
+      </p>
+      <p>
+        <strong>Tanggal Selesai:</strong>{' '}
+        {moment(eventToShow.end).format('DD/MM/YYYY HH:mm')}
+      </p>
+      <div className="flex justify-end mt-4">
+        <button
+          onClick={() => setShowEventDetails1(false)}
+          className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none"
+        >
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

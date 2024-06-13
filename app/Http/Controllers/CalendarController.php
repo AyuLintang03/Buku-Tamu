@@ -9,30 +9,18 @@ class CalenderController extends Controller
 {
     public function index()
     {
-        return Calender::all();
+        $calender=Calender::all();
+        return response()->json($calender);
     }
 
-    public function store(Request $request)
-    {
-        $event = Calender::create($request->all());
-        return response()->json($event, 201);
+    public function store_calender(Request $request){
+        $validated = $request->validate([
+            'keterangan' =>'required',
+            'tanggal_start' =>'required',
+            'tanggal_end' =>'required',
+        ]);
+        $calender = Calender::create($validated);
+        return response()->json(['message' => 'Data Berhasil', 'calender' => $calender], 201);
     }
 
-    public function show($id)
-    {
-        return Calender::find($id);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $event = Calender::findOrFail($id);
-        $event->update($request->all());
-        return response()->json($event, 200);
-    }
-
-    public function destroy($id)
-    {
-        Calender::destroy($id);
-        return response()->json(null, 204);
-    }
 }

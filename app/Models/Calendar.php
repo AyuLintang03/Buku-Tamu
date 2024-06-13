@@ -10,8 +10,8 @@ class Calendar extends Model
     use HasFactory;
 
     protected $fillable = [
-        'keterangan',
-        'tanggal_start',
-        'tanggal_end',
+        'title',
+        'start',
+        'end',
     ];
 }

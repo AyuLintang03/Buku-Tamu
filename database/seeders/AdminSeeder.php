@@ -20,16 +20,9 @@ class AdminSeeder extends Seeder
                 'role' => 'admin', 
             ]
         ];
-        $operator = [
-            [
-                'username' => 'Operator',
-                'email' => 'operator@gmail.com',
-                'password' => bcrypt('operator123'),
-                'role' => 'operator', 
-            ]
-        ];
+        
 
         User::insert($admin);
-        User::insert($operator);
+        
     }
 }
